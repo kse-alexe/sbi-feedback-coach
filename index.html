@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коуч по обратной связи · SBI</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#4F46E5;--blue-light:#EEF2FF;--blue-mid:#C7D2FE;--blue-dark:#3730A3;
+  --green:#059669;--green-light:#D1FAE5;--green-mid:#A7F3D0;
+  --amber:#D97706;--amber-light:#FEF3C7;
+  --text:#1a1a2e;--muted:#64647a;--hint:#9999b0;
+  --bg:#F8F8FC;--surface:#ffffff;--border:#E8E8F0;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 24px;display:flex;align-items:baseline;gap:12px}
+.header-title{font-family:'Instrument Serif',serif;font-size:21px;font-weight:400}
+.header-badge{font-size:11px;font-weight:500;letter-spacing:.08em;background:var(--blue-light);color:var(--blue);padding:3px 10px;border-radius:20px;text-transform:uppercase}
+.header-sub{font-size:12px;color:var(--hint);margin-left:auto}
+.mode-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border)}
+.mode-tab{flex:1;padding:12px 10px;text-align:center;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--hint);border-bottom:2px solid transparent;transition:all .2s}
+.mode-tab:hover{color:var(--muted)}
+.mode-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.mode-tab .tab-icon{display:block;font-size:17px;margin-bottom:3px}
+.progress-bar-wrap{background:var(--border);height:3px}
+.progress-bar-fill{height:3px;background:var(--blue);transition:width .4s ease}
+.step-nav{display:flex;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.step-nav::-webkit-scrollbar{display:none}
+.step-pill{flex:1;min-width:66px;padding:11px 4px 9px;text-align:center;cursor:pointer;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--hint);border-bottom:2px solid transparent;transition:all .2s}
+.step-pill:hover{color:var(--muted);background:var(--bg)}
+.step-pill.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.step-pill.done{color:var(--green)}
+.step-pill .pill-key{display:block;font-size:13px;font-weight:600;margin-bottom:2px}
+.step-pill.done .pill-key::after{content:' ✓'}
+.main{max-width:720px;margin:0 auto;padding:28px 24px 80px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 26px;margin-bottom:14px;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.step-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.step-diamond{width:42px;height:42px;background:var(--blue-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--blue);flex-shrink:0;transform:rotate(45deg)}
+.step-diamond span{transform:rotate(-45deg);display:block}
+.step-title{font-family:'Instrument Serif',serif;font-size:19px;font-weight:400;color:var(--text);line-height:1.2}
+.step-subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+.step-epoch{margin-left:auto;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;flex-shrink:0}
+.epoch-past{background:#EDE9FE;color:#6D28D9}
+.epoch-future{background:var(--green-light);color:#065F46}
+.step-question{font-size:15px;font-weight:500;color:var(--text);margin-bottom:5px;line-height:1.5}
+.step-hint{font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.5;font-style:italic}
+textarea{width:100%;min-height:76px;resize:vertical;font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
+textarea:focus{border-color:var(--blue-mid);background:#fff}
+textarea::placeholder{color:var(--hint)}
+.example-toggle{margin-top:7px;font-size:12px;color:var(--blue);cursor:pointer;background:none;border:none;font-family:inherit;padding:0;opacity:.7;transition:opacity .15s}
+.example-toggle:hover{opacity:1}
+.example-box{display:none;margin-top:7px;padding:10px 13px;background:var(--blue-light);border-radius:8px;font-size:13px;color:#3730A3;line-height:1.5;font-style:italic}
+.example-box.open{display:block}
+.epoch-divider{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
+.epoch-divider-line{flex:1;height:1px;background:var(--border)}
+.epoch-divider-label{font-size:11px;font-weight:500;color:var(--hint);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.btn{padding:9px 20px;font-size:14px;font-weight:500;border-radius:10px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.btn:hover{background:var(--bg);border-color:var(--blue-mid)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-primary:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.step-counter{font-size:12px;color:var(--hint)}
+.final-row{padding:13px 22px;border-bottom:1px solid var(--border);display:flex;gap:13px}
+.final-row:last-child{border-bottom:none}
+.final-tag{flex-shrink:0;width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;transform:rotate(45deg);margin-top:3px;background:var(--blue-light);color:var(--blue)}
+.final-tag span{transform:rotate(-45deg);display:block}
+.final-tag.green{background:var(--green-light);color:var(--green)}
+.final-row-label{font-size:11px;color:var(--hint);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
+.final-row-text{font-size:14px;color:var(--text);line-height:1.5}
+.result-card{background:var(--surface);border:1.5px solid var(--blue-mid);border-radius:16px;padding:22px 24px;margin-bottom:14px}
+.result-card h3{font-family:'Instrument Serif',serif;font-size:17px;font-weight:400;margin-bottom:12px}
+.result-text{font-size:15px;line-height:1.8;color:var(--text);white-space:pre-wrap}
+.result-actions{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap}
+.copy-wrap{position:relative}
+.copied-toast{position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;font-size:11px;padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+.copied-toast.show{opacity:1}
+.section-title{font-family:'Instrument Serif',serif;font-size:18px;font-weight:400;margin-bottom:4px}
+.section-desc{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5}
+.sit-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;animation:fadeUp .2s ease}
+.sit-card-header{padding:13px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.sit-card-header:hover{background:var(--bg)}
+.sit-num{width:26px;height:26px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sit-card-preview{font-size:12px;color:var(--hint);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.sit-badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;flex-shrink:0}
+.sit-badge.full{background:var(--green-light);color:var(--green)}
+.sit-badge.empty{background:var(--bg);color:var(--hint)}
+.sit-chevron{font-size:12px;color:var(--hint);transition:transform .2s;flex-shrink:0}
+.sit-chevron.open{transform:rotate(180deg)}
+.sit-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border)}
+.sit-body.open{display:block}
+.mini-field{margin-bottom:12px}
+.mini-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.mini-tag{font-size:10px;padding:1px 7px;border-radius:20px;font-weight:600}
+.tag-blue{background:var(--blue-light);color:var(--blue)}
+.tag-green{background:var(--green-light);color:var(--green)}
+.inner-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.inner-tab{padding:7px 16px;font-size:13px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s}
+.inner-tab.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid)}
+.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
+.q-num{width:22px;height:22px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.q-text{font-size:14px;line-height:1.55;color:var(--text);flex:1}
+.q-phase{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;margin-top:4px;display:inline-block}
+.q-open{background:var(--blue-light);color:var(--blue)}
+.q-reflect{background:var(--amber-light);color:var(--amber)}
+.q-forward{background:var(--green-light);color:var(--green)}
+@media(max-width:540px){.main{padding:18px 14px 60px}.card{padding:18px 16px}.header-sub{display:none}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <span class="header-title">Коуч по обратной связи</span>
+  <span class="header-badge">SBI + Alt B&amp;I</span>
+  <span class="header-sub">от ikra</span>
+</header>
+
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="switchMode('single')" id="tab-single">
+    <span class="tab-icon">✦</span>Разовая ОС
+  </button>
+  <button class="mode-tab" onclick="switchMode('review')" id="tab-review">
+    <span class="tab-icon">◎</span>Подготовка к ревью
+  </button>
+  <button class="mode-tab" onclick="switchMode('questions')" id="tab-questions">
+    <span class="tab-icon">?</span>Вопросы для встречи
+  </button>
+</div>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+
+<div id="mode-single">
+  <nav class="step-nav" id="stepNav"></nav>
+  <main class="main" id="mainContent"></main>
+</div>
+
+<div id="mode-review" style="display:none">
+  <main class="main">
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="switchReviewTab('prepare')" id="rtab-prepare">Подготовка ситуаций</button>
+      <button class="inner-tab" onclick="switchReviewTab('summary')" id="rtab-summary">Итоговая сводка</button>
+    </div>
+    <div id="review-prepare">
+      <p class="section-title">Соберите 3–5 ситуаций за период</p>
+      <p class="section-desc">Заполните SBI для каждой ситуации — отдельно для похвалы и для развития. Так на ревью будут конкретные примеры, а не общие слова.</p>
+      <div id="sitList"></div>
+      <button class="btn" onclick="addSituation()" style="width:100%;border-style:dashed;color:var(--muted)">+ Добавить ситуацию</button>
+    </div>
+    <div id="review-summary" style="display:none">
+      <p class="section-title">Сводка для разговора</p>
+      <p class="section-desc">Все ситуации собраны — скопируйте промпт и откройте в Claude для финальной обработки.</p>
+      <div id="reviewSummaryContent"></div>
+    </div>
+  </main>
+</div>
+
+<div id="mode-questions" style="display:none">
+  <main class="main">
+    <p class="section-title">Вопросы для разговора на ревью</p>
+    <p class="section-desc">Ревью — это диалог, а не монолог. Эти вопросы помогают сотруднику самому прийти к выводам и принять ОС как свою.</p>
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="switchQTab('open')" id="qtab-open">Открывающие</button>
+      <button class="inner-tab" onclick="switchQTab('sbi')" id="qtab-sbi">После ОС по SBI</button>
+      <button class="inner-tab" onclick="switchQTab('forward')" id="qtab-forward">На будущее</button>
+    </div>
+    <div id="q-open"><div id="qlist-open"></div></div>
+    <div id="q-sbi" style="display:none"><div id="qlist-sbi"></div></div>
+    <div id="q-forward" style="display:none"><div id="qlist-forward"></div></div>
+    <div style="margin-top:20px">
+      <button class="btn" onclick="copyQuestions()">Скопировать все вопросы</button>
+    </div>
+  </main>
+</div>
+
+<script>
+var STEPS=[
+  {key:'S',label:'Situation',ru:'Ситуация',epoch:'past',epochLabel:'Что было',
+   question:'Опишите конкретную ситуацию: когда и где это произошло?',
+   hint:'Время, место, контекст. Чем конкретнее — тем лучше.',
+   example:'«На этой неделе, в среду, ты прислал данные за два дня до встречи с клиентом.»',
+   placeholder:'Например: На встрече с командой в пятницу...'},
+  {key:'B',label:'Behaviour',ru:'Поведение',epoch:'past',epochLabel:'Что было',
+   question:'Какое конкретное поведение вы наблюдали?',
+   hint:'Только факты — что сделал или сказал человек. Без интерпретаций и оценок.',
+   example:'«Ты прислал данные на 2 дня позже дедлайна, не предупредив об этом заранее.»',
+   placeholder:'Например: Ты не прислал отчёт в срок...'},
+  {key:'I',label:'Impact',ru:'Результат',epoch:'past',epochLabel:'Что было',
+   question:'К чему это поведение привело?',
+   hint:'Последствия для команды, клиента, результата. Говорите о фактах, не об эмоциях.',
+   example:'«Мы не успели подготовиться ко встрече с клиентом — встреча прошла слабее, чем могла.»',
+   placeholder:'Например: Команда не успела подготовиться...'},
+  {key:'AltB',label:'Alt Behaviour',ru:'Альт. поведение',epoch:'future',epochLabel:'Изменение',
+   question:'Как можно было бы действовать иначе? Что вы просите делать в будущем?',
+   hint:'Конкретная просьба или открытый вопрос — как человек сам видит изменения.',
+   example:'«Если видишь, что не успеваешь — скажи заранее. Давай обсудим, что поможет в следующий раз?»',
+   placeholder:'Например: Если не успеваешь — предупреди за день...'},
+  {key:'AltI',label:'Alt Impact',ru:'Альт. результат',epoch:'future',epochLabel:'Изменение',
+   question:'Какой эффект это даст?',
+   hint:'Покажите позитивный результат изменения — для человека, команды, клиента.',
+   example:'«Я буду знать, к чему готовиться, и смогу подхватить. Встречи будут проходить сильнее.»',
+   placeholder:'Например: Тогда мы сможем перераспределить задачи...'}
+];
+var current=0, inputs=['','','','',''], openEx=[false,false,false,false,false];
+
+function pct(){return Math.round(inputs.filter(function(v){return v.trim()}).length/5*100)}
+
+function renderNav(){
+  var nav=document.getElementById('stepNav');
+  nav.innerHTML=STEPS.map(function(s,i){
+    return '<button class="step-pill'+(i===current&&current<5?' active':'')+(inputs[i].trim()?' done':'')+'" onclick="goStep('+i+')"><span class="pill-key">'+s.key+'</span><span>'+s.ru+'</span></button>';
+  }).join('')+'<button class="step-pill'+(current===5?' active':'')+'" onclick="goFinal()"><span class="pill-key">→</span><span>Итог</span></button>';
+  document.getElementById('progressBar').style.width=pct()+'%';
+}
+
+function saveInput(){var ta=document.getElementById('ta-main');if(ta&&current<5)inputs[current]=ta.value}
+function goStep(i){saveInput();current=i;render()}
+function goFinal(){saveInput();current=5;render()}
+
+function render(){
+  renderNav();
+  var el=document.getElementById('mainContent');
+  if(current===5){renderFinal(el);return}
+  var s=STEPS[current];var isPast=s.epoch==='past';
+  var divider=current===3?'<div class="epoch-divider"><div class="epoch-divider-line"></div><span class="epoch-divider-label">↓ теперь — изменение в будущем</span><div class="epoch-divider-line"></div></div>':'';
+  el.innerHTML='<div class="card"><div class="step-header"><div class="step-diamond"><span>'+s.key+'</span></div><div><div class="step-title">'+s.ru+'</div><div class="step-subtitle">'+s.label+'</div></div><span class="step-epoch '+(isPast?'epoch-past':'epoch-future')+'">'+s.epochLabel+'</span></div>'+divider+'<p class="step-question">'+s.question+'</p><p class="step-hint">'+s.hint+'</p><textarea id="ta-main" placeholder="'+s.placeholder+'" oninput="saveInput()">'+inputs[current]+'</textarea><button class="example-toggle" onclick="toggleEx()">'+(openEx[current]?'▲ Скрыть пример':'▼ Показать пример')+'</button><div class="example-box'+(openEx[current]?' open':'')+'">'+s.example+'</div></div><div class="nav-row"><button class="btn" onclick="prevStep()"'+(current===0?' disabled':'')+'>← Назад</button><span class="step-counter">'+(current+1)+' / 5</span><button class="btn btn-primary" onclick="nextStep()">'+(current===4?'Собрать ОС →':'Далее →')+'</button></div>';
+}
+
+function toggleEx(){saveInput();openEx[current]=!openEx[current];render();setTimeout(function(){var ta=document.getElementById('ta-main');if(ta)ta.focus()},10)}
+function prevStep(){saveInput();if(current>0){current--;render()}}
+function nextStep(){saveInput();if(current<4){current++;render()}else{current=5;render()}}
+
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+
+function buildText(){return inputs.map(function(v){return v.trim()}).filter(Boolean).join(' ')}
+function buildPrompt(){
+  return 'Помоги улучшить обратную связь по модели SBI + Alternative B&I.\n\nS: '+inputs[0]+'\nB: '+inputs[1]+'\nI: '+inputs[2]+'\nAlt B: '+inputs[3]+'\nAlt I: '+inputs[4]+'\n\n1. Собери связный тёплый текст для разговора (5–8 предложений)\n2. Укажи, если есть оценки вместо фактов\n3. Предложи 2–3 варианта, как начать разговор вживую'
+}
+
+function renderFinal(el){
+  var text=buildText();
+  var rows=STEPS.map(function(s,i){
+    if(!inputs[i].trim())return '';
+    return '<div class="final-row"><div class="final-tag'+(i>2?' green':'')+'"><span>'+s.key+'</span></div><div><div class="final-row-label">'+s.label+' · '+s.ru+'</div><div class="final-row-text">'+esc(inputs[i].trim())+'</div></div></div>'
+  }).join('');
+  el.innerHTML='<div style="animation:fadeUp .3s ease"><div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 22px 12px;border-bottom:1px solid var(--border)"><span style="font-family:Instrument Serif,serif;font-size:17px">Ваши ответы</span></div>'+rows+'</div><div class="result-card"><h3>Черновик текста для разговора</h3><div class="result-text">'+esc(text)+'</div><div class="result-actions"><div class="copy-wrap"><div class="copied-toast" id="ct1">Скопировано!</div><button class="btn" onclick="copyIt(buildText(),\'ct1\')">Скопировать</button></div><button class="btn btn-primary" onclick="openClaude()">✦ Улучшить в Claude →</button></div></div><div class="card" style="background:var(--bg)"><p style="font-size:13px;font-weight:500;margin-bottom:9px">Промпт для ChatGPT / другого AI</p><div style="background:var(--surface);border-radius:9px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:160px;overflow-y:auto">'+esc(buildPrompt())+'</div><div class="copy-wrap" style="margin-top:10px"><div class="copied-toast" id="ct2">Скопировано!</div><button class="btn" style="font-size:13px" onclick="copyIt(buildPrompt(),\'ct2\')">Скопировать промпт</button></div></div><div style="text-align:center;margin-top:18px"><button class="btn" onclick="restart()">Начать заново</button></div></div>';
+}
+
+function copyIt(text,id){navigator.clipboard.writeText(text).then(function(){var t=document.getElementById(id);t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)})}
+function openClaude(){window.open('https://claude.ai/new?q='+encodeURIComponent(buildPrompt()),'_blank')}
+function restart(){inputs=['','','','',''];openEx=[false,false,false,false,false];current=0;render()}
+
+/* REVIEW */
+var situations=[
+  {id:1,type:'positive',label:'Позитивная ситуация',s:'',b:'',i:'',ab:'',ai:'',open:true},
+  {id:2,type:'develop',label:'Развивающая ситуация',s:'',b:'',i:'',ab:'',ai:'',open:false}
+];
+var sitCounter=3;
+
+function addSituation(){
+  situations.push({id:sitCounter++,type:'develop',label:'Ситуация '+(situations.length+1),s:'',b:'',i:'',ab:'',ai:'',open:true});
+  renderSituations();
+}
+
+function renderSituations(){
+  var el=document.getElementById('sitList');
+  el.innerHTML=situations.map(function(sit,idx){
+    var filled=[sit.s,sit.b,sit.i].filter(function(v){return v.trim()}).length;
+    var full=filled===3;
+    var bodyFields=['s','b','i'].map(function(f,fi){
+      var lbls=['S — Ситуация','B — Поведение','I — Результат'];
+      var phs=['Когда и где это произошло?','Что конкретно сделал/сказал?','К чему это привело?'];
+      return '<div class="mini-field"><div class="mini-label"><span class="mini-tag tag-blue">'+f.toUpperCase()+'</span>'+lbls[fi]+'</div><textarea style="min-height:54px" placeholder="'+phs[fi]+'" oninput="setSitField('+idx+',\''+f+'\',this.value)">'+sit[f]+'</textarea></div>';
+    }).join('');
+    var futureFields=['ab','ai'].map(function(f,fi){
+      var lbls=['Alt B — Что предложить','Alt I — Какой будет эффект'];
+      var phs=['Как действовать иначе?','Какой результат это даст?'];
+      return '<div class="mini-field"><div class="mini-label"><span class="mini-tag tag-green">'+f.toUpperCase()+'</span>'+lbls[fi]+'</div><textarea style="min-height:54px" placeholder="'+phs[fi]+'" oninput="setSitField('+idx+',\''+f+'\',this.value)">'+sit[f]+'</textarea></div>';
+    }).join('');
+    var typeBtn=function(type,label){
+      var active=sit.type===type;
+      var col=type==='positive'?'var(--green)':'var(--blue)';
+      var bg=type==='positive'?'var(--green-light)':'var(--blue-light)';
+      return '<button onclick="setSitType('+idx+',\''+type+'\')" style="padding:3px 12px;font-size:12px;border-radius:20px;border:1.5px solid '+(active?col:'var(--border)')+';background:'+(active?bg:'transparent')+';color:'+(active?col:'var(--muted)')+';cursor:pointer;font-family:inherit">'+label+'</button>';
+    };
+    return '<div class="sit-card"><div class="sit-card-header" onclick="toggleSit('+idx+')"><div class="sit-num">'+(idx+1)+'</div><div style="flex:1;min-width:0"><input value="'+sit.label.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation()" onchange="setSitLabel('+idx+',this.value)" style="border:none;background:transparent;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;color:var(--text);width:100%;outline:none;cursor:text" placeholder="Название ситуации">'+(sit.s?'<div class="sit-card-preview">'+esc(sit.s.substring(0,55))+'...</div>':'')+'</div><span class="sit-badge '+(full?'full':'empty')+'">'+(full?'SBI ✓':filled+'/3')+'</span><span class="sit-chevron'+(sit.open?' open':'')+'">▼</span></div><div class="sit-body'+(sit.open?' open':'')+'"><div style="display:flex;gap:6px;margin:12px 0 14px;flex-wrap:wrap;align-items:center"><span style="font-size:12px;color:var(--muted)">Тип:</span>'+typeBtn('positive','Позитивная')+typeBtn('develop','Развивающая')+'</div>'+bodyFields+'<div style="border-top:1px dashed var(--border);padding-top:12px;margin-top:4px"><p style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Изменение (необязательно)</p>'+futureFields+'</div>'+(situations.length>1?'<button class="btn" style="font-size:12px;color:#dc2626;border-color:#fca5a5;margin-top:4px" onclick="removeSit('+idx+')">Удалить</button>':'')+'</div></div>';
+  }).join('');
+}
+
+function setSitField(idx,field,val){situations[idx][field]=val}
+function setSitLabel(idx,val){situations[idx].label=val}
+function setSitType(idx,type){situations[idx].type=type;renderSituations()}
+function toggleSit(idx){situations[idx].open=!situations[idx].open;renderSituations()}
+function removeSit(idx){situations.splice(idx,1);renderSituations()}
+
+function switchReviewTab(tab){
+  document.getElementById('review-prepare').style.display=tab==='prepare'?'block':'none';
+  document.getElementById('review-summary').style.display=tab==='summary'?'block':'none';
+  document.getElementById('rtab-prepare').classList.toggle('active',tab==='prepare');
+  document.getElementById('rtab-summary').classList.toggle('active',tab==='summary');
+  if(tab==='summary')renderReviewSummary();
+}
+
+function renderReviewSummary(){
+  var el=document.getElementById('reviewSummaryContent');
+  var filled=situations.filter(function(s){return s.s.trim()||s.b.trim()||s.i.trim()});
+  if(!filled.length){el.innerHTML='<p style="color:var(--muted);font-size:14px">Заполните хотя бы одну ситуацию на вкладке «Подготовка».</p>';return}
+  var prompt='Помоги подготовиться к performance review.\n\nЯ собрал ситуации по модели SBI + Alternative B&I:\n\n'+filled.map(function(s){
+    return '--- '+s.label+' ('+( s.type==='positive'?'позитивная':'развивающая')+')\nS: '+(s.s||'—')+'\nB: '+(s.b||'—')+'\nI: '+(s.i||'—')+'\nAlt B: '+(s.ab||'—')+'\nAlt I: '+(s.ai||'—');
+  }).join('\n\n')+'\n\nЗадачи:\n1. Улучши формулировки (убери оценки, оставь только факты)\n2. Предложи порядок подачи ОС на встрече\n3. Напиши связный текст для разговора';
+  var rows=filled.map(function(s){
+    var col=s.type==='positive'?'var(--green)':'var(--blue)';
+    var bg=s.type==='positive'?'var(--green-light)':'var(--blue-light)';
+    return '<div class="final-row"><div style="flex-shrink:0;padding-top:2px"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+bg+';color:'+col+'">'+s.label+'</span></div><div>'+(s.s?'<div class="final-row-text" style="font-size:13px">'+esc(s.s)+'</div>':'')+(s.b?'<div class="final-row-text" style="font-size:13px;color:var(--muted)">'+esc(s.b)+'</div>':'')+'</div></div>';
+  }).join('');
+  el.innerHTML='<div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">'+rows+'</div><div class="result-card"><h3>Промпт для Claude / ChatGPT</h3><div style="background:var(--bg);border-radius:9px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:200px;overflow-y:auto">'+esc(prompt)+'</div><div class="result-actions"><div class="copy-wrap"><div class="copied-toast" id="ct3">Скопировано!</div><button class="btn" onclick="copyIt3()">Скопировать промпт</button></div><button class="btn btn-primary" id="openClaudeReview">✦ Открыть в Claude →</button></div></div>';
+  document.getElementById('openClaudeReview').onclick=function(){window.open('https://claude.ai/new?q='+encodeURIComponent(prompt),'_blank')};
+  window._reviewPrompt=prompt;
+}
+function copyIt3(){copyIt(window._reviewPrompt||'','ct3')}
+
+/* QUESTIONS */
+var QUESTIONS={
+  open:[
+    {text:'Как ты сам оцениваешь этот период? Что получилось лучше всего?',phase:'open'},
+    {text:'Были ли ситуации, где ты чувствовал, что мог сработать сильнее?',phase:'open'},
+    {text:'Что тебе помогало работать в полную силу? Что мешало?',phase:'open'},
+    {text:'Как ты себя чувствуешь в команде прямо сейчас?',phase:'open'}
+  ],
+  sbi:[
+    {text:'Я хочу поделиться конкретным наблюдением. Как тебе отзывается то, что я сказал?',phase:'reflect'},
+    {text:'Ты согласен с тем, что я описал? Или видишь ситуацию иначе?',phase:'reflect'},
+    {text:'Что, на твой взгляд, привело к этому?',phase:'reflect'},
+    {text:'Как ты думаешь, что можно было бы сделать иначе?',phase:'reflect'},
+    {text:'Что тебе нужно от меня, чтобы в следующий раз получилось по-другому?',phase:'reflect'}
+  ],
+  forward:[
+    {text:'Если говорить о следующих 3 месяцах — на чём ты хочешь сосредоточиться?',phase:'forward'},
+    {text:'Какую одну привычку или практику ты готов взять на себя?',phase:'forward'},
+    {text:'Как я могу тебе помочь? Что изменить в нашей работе вместе?',phase:'forward'},
+    {text:'По каким признакам мы оба поймём, что движемся в правильном направлении?',phase:'forward'}
+  ]
+};
+var PHASE_L={open:'Открывающий',reflect:'После ОС',forward:'На будущее'};
+var PHASE_C={open:'q-open',reflect:'q-reflect',forward:'q-forward'};
+
+function renderQuestions(tab){
+  var el=document.getElementById('qlist-'+tab);
+  el.innerHTML=QUESTIONS[tab].map(function(q,i){
+    return '<div class="q-card"><div class="q-num">'+(i+1)+'</div><div><div class="q-text">'+q.text+'</div><span class="q-phase '+PHASE_C[q.phase]+'">'+PHASE_L[q.phase]+'</span></div></div>';
+  }).join('');
+}
+
+function switchQTab(tab){
+  ['open','sbi','forward'].forEach(function(t){
+    document.getElementById('q-'+t).style.display=t===tab?'block':'none';
+    document.getElementById('qtab-'+t).classList.toggle('active',t===tab);
+  });
+}
+
+function copyQuestions(){
+  var names={open:'Открывающие вопросы',sbi:'После ОС по SBI',forward:'На будущее'};
+  var all=Object.keys(QUESTIONS).map(function(g){
+    return names[g]+':\n'+QUESTIONS[g].map(function(q,i){return (i+1)+'. '+q.text}).join('\n');
+  }).join('\n\n');
+  navigator.clipboard.writeText(all).then(function(){alert('Все вопросы скопированы!')});
+}
+
+function switchMode(mode){
+  ['single','review','questions'].forEach(function(m){
+    var p=document.getElementById('mode-'+m);if(p)p.style.display=m===mode?'block':'none';
+    var t=document.getElementById('tab-'+m);if(t)t.classList.toggle('active',m===mode);
+  });
+  var sn=document.getElementById('stepNav');if(sn)sn.style.display=mode==='single'?'flex':'none';
+  document.getElementById('progressBar').style.width=mode==='single'?pct()+'%':'0%';
+}
+
+renderSituations();
+['open','sbi','forward'].forEach(renderQuestions);
+render();
+</script>
+</body>
+</html>
