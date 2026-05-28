@@ -11,6 +11,7 @@
   --blue:#4F46E5;--blue-light:#EEF2FF;--blue-mid:#C7D2FE;--blue-dark:#3730A3;
   --green:#059669;--green-light:#D1FAE5;--green-mid:#A7F3D0;
   --amber:#D97706;--amber-light:#FEF3C7;
+  --red:#DC2626;--red-light:#FEE2E2;
   --text:#1a1a2e;--muted:#64647a;--hint:#9999b0;
   --bg:#F8F8FC;--surface:#ffffff;--border:#E8E8F0;
 }
@@ -62,6 +63,8 @@ textarea::placeholder{color:var(--hint)}
 .btn:disabled{opacity:.3;cursor:not-allowed}
 .btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
 .btn-primary:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:#047857;border-color:#047857}
 .nav-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
 .step-counter{font-size:12px;color:var(--hint)}
 .final-row{padding:13px 22px;border-bottom:1px solid var(--border);display:flex;gap:13px}
@@ -100,14 +103,36 @@ textarea::placeholder{color:var(--hint)}
 .inner-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
 .inner-tab{padding:7px 16px;font-size:13px;font-weight:500;border-radius:20px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font-family:'DM Sans',sans-serif;transition:all .15s}
 .inner-tab.active{background:var(--blue-light);color:var(--blue);border-color:var(--blue-mid)}
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start}
-.q-num{width:22px;height:22px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.q-text{font-size:14px;line-height:1.55;color:var(--text);flex:1}
-.q-phase{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;margin-top:4px;display:inline-block}
-.q-open{background:var(--blue-light);color:var(--blue)}
-.q-reflect{background:var(--amber-light);color:var(--amber)}
-.q-forward{background:var(--green-light);color:var(--green)}
-@media(max-width:540px){.main{padding:18px 14px 60px}.card{padding:18px 16px}.header-sub{display:none}}
+
+/* ── TRAINER ── */
+.trainer-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:16px;animation:fadeUp .3s ease}
+.trainer-scenario{padding:20px 24px;background:var(--bg);border-bottom:1px solid var(--border)}
+.trainer-scenario-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--hint);margin-bottom:8px}
+.trainer-scenario-text{font-size:14px;line-height:1.65;color:var(--text)}
+.trainer-bad{padding:16px 24px;border-bottom:1px solid var(--border)}
+.trainer-bad-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.trainer-bad-text{font-size:14px;line-height:1.65;color:var(--text);font-style:italic}
+.error-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:20px;background:var(--red-light);color:var(--red);font-weight:500;margin-right:4px;font-style:normal}
+.trainer-input{padding:16px 24px;border-bottom:1px solid var(--border)}
+.trainer-input-label{font-size:13px;font-weight:500;color:var(--text);margin-bottom:8px}
+.trainer-actions{padding:16px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.trainer-answer{display:none;padding:16px 24px;border-top:1px solid var(--border);background:var(--green-light);animation:fadeUp .2s ease}
+.trainer-answer.open{display:block}
+.trainer-answer-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin-bottom:8px}
+.trainer-answer-text{font-size:14px;line-height:1.65;color:var(--text)}
+.trainer-explain{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5}
+.trainer-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid var(--border)}
+.trainer-progress{font-size:12px;color:var(--hint)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background .2s}
+.dot.active{background:var(--blue)}
+.dot.done{background:var(--green)}
+.ai-loading{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);padding:16px 24px}
+.blink span{animation:blink 1.2s infinite;display:inline-block}
+.blink span:nth-child(2){animation-delay:.2s}
+.blink span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+@media(max-width:540px){.main{padding:18px 14px 60px}.card{padding:18px 16px}.header-sub{display:none}.trainer-scenario,.trainer-bad,.trainer-input,.trainer-actions,.trainer-nav{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
@@ -125,18 +150,20 @@ textarea::placeholder{color:var(--hint)}
   <button class="mode-tab" onclick="switchMode('review')" id="tab-review">
     <span class="tab-icon">◎</span>Подготовка к ревью
   </button>
-  <button class="mode-tab" onclick="switchMode('questions')" id="tab-questions">
-    <span class="tab-icon">?</span>Вопросы для встречи
+  <button class="mode-tab" onclick="switchMode('trainer')" id="tab-trainer">
+    <span class="tab-icon">⚡</span>Тренажёр
   </button>
 </div>
 
 <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
 
+<!-- ═══ SINGLE ═══ -->
 <div id="mode-single">
   <nav class="step-nav" id="stepNav"></nav>
   <main class="main" id="mainContent"></main>
 </div>
 
+<!-- ═══ REVIEW ═══ -->
 <div id="mode-review" style="display:none">
   <main class="main">
     <div class="inner-tabs">
@@ -157,25 +184,20 @@ textarea::placeholder{color:var(--hint)}
   </main>
 </div>
 
-<div id="mode-questions" style="display:none">
+<!-- ═══ TRAINER ═══ -->
+<div id="mode-trainer" style="display:none">
   <main class="main">
-    <p class="section-title">Вопросы для разговора на ревью</p>
-    <p class="section-desc">Ревью — это диалог, а не монолог. Эти вопросы помогают сотруднику самому прийти к выводам и принять ОС как свою.</p>
-    <div class="inner-tabs">
-      <button class="inner-tab active" onclick="switchQTab('open')" id="qtab-open">Открывающие</button>
-      <button class="inner-tab" onclick="switchQTab('sbi')" id="qtab-sbi">После ОС по SBI</button>
-      <button class="inner-tab" onclick="switchQTab('forward')" id="qtab-forward">На будущее</button>
-    </div>
-    <div id="q-open"><div id="qlist-open"></div></div>
-    <div id="q-sbi" style="display:none"><div id="qlist-sbi"></div></div>
-    <div id="q-forward" style="display:none"><div id="qlist-forward"></div></div>
-    <div style="margin-top:20px">
-      <button class="btn" onclick="copyQuestions()">Скопировать все вопросы</button>
+    <p class="section-title">Тренажёр</p>
+    <p class="section-desc">Вам дана ситуация и неправильная формулировка ОС. Напишите свою версию по модели SBI + Alt B&amp;I, затем сверьтесь с эталоном.</p>
+    <div id="trainerContent"></div>
+    <div style="text-align:center;margin-top:8px">
+      <button class="btn" onclick="generateAICase()" id="genBtn">✦ Сгенерировать новую ситуацию</button>
     </div>
   </main>
 </div>
 
 <script>
+/* ══════════════ SINGLE ══════════════ */
 var STEPS=[
   {key:'S',label:'Situation',ru:'Ситуация',epoch:'past',epochLabel:'Что было',
    question:'Опишите конкретную ситуацию: когда и где это произошло?',
@@ -203,10 +225,8 @@ var STEPS=[
    example:'«Я буду знать, к чему готовиться, и смогу подхватить. Встречи будут проходить сильнее.»',
    placeholder:'Например: Тогда мы сможем перераспределить задачи...'}
 ];
-var current=0, inputs=['','','','',''], openEx=[false,false,false,false,false];
-
+var current=0,inputs=['','','','',''],openEx=[false,false,false,false,false];
 function pct(){return Math.round(inputs.filter(function(v){return v.trim()}).length/5*100)}
-
 function renderNav(){
   var nav=document.getElementById('stepNav');
   nav.innerHTML=STEPS.map(function(s,i){
@@ -214,11 +234,9 @@ function renderNav(){
   }).join('')+'<button class="step-pill'+(current===5?' active':'')+'" onclick="goFinal()"><span class="pill-key">→</span><span>Итог</span></button>';
   document.getElementById('progressBar').style.width=pct()+'%';
 }
-
 function saveInput(){var ta=document.getElementById('ta-main');if(ta&&current<5)inputs[current]=ta.value}
 function goStep(i){saveInput();current=i;render()}
 function goFinal(){saveInput();current=5;render()}
-
 function render(){
   renderNav();
   var el=document.getElementById('mainContent');
@@ -227,43 +245,28 @@ function render(){
   var divider=current===3?'<div class="epoch-divider"><div class="epoch-divider-line"></div><span class="epoch-divider-label">↓ теперь — изменение в будущем</span><div class="epoch-divider-line"></div></div>':'';
   el.innerHTML='<div class="card"><div class="step-header"><div class="step-diamond"><span>'+s.key+'</span></div><div><div class="step-title">'+s.ru+'</div><div class="step-subtitle">'+s.label+'</div></div><span class="step-epoch '+(isPast?'epoch-past':'epoch-future')+'">'+s.epochLabel+'</span></div>'+divider+'<p class="step-question">'+s.question+'</p><p class="step-hint">'+s.hint+'</p><textarea id="ta-main" placeholder="'+s.placeholder+'" oninput="saveInput()">'+inputs[current]+'</textarea><button class="example-toggle" onclick="toggleEx()">'+(openEx[current]?'▲ Скрыть пример':'▼ Показать пример')+'</button><div class="example-box'+(openEx[current]?' open':'')+'">'+s.example+'</div></div><div class="nav-row"><button class="btn" onclick="prevStep()"'+(current===0?' disabled':'')+'>← Назад</button><span class="step-counter">'+(current+1)+' / 5</span><button class="btn btn-primary" onclick="nextStep()">'+(current===4?'Собрать ОС →':'Далее →')+'</button></div>';
 }
-
 function toggleEx(){saveInput();openEx[current]=!openEx[current];render();setTimeout(function(){var ta=document.getElementById('ta-main');if(ta)ta.focus()},10)}
 function prevStep(){saveInput();if(current>0){current--;render()}}
 function nextStep(){saveInput();if(current<4){current++;render()}else{current=5;render()}}
-
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
-
 function buildText(){return inputs.map(function(v){return v.trim()}).filter(Boolean).join(' ')}
-function buildPrompt(){
-  return 'Помоги улучшить обратную связь по модели SBI + Alternative B&I.\n\nS: '+inputs[0]+'\nB: '+inputs[1]+'\nI: '+inputs[2]+'\nAlt B: '+inputs[3]+'\nAlt I: '+inputs[4]+'\n\n1. Собери связный тёплый текст для разговора (5–8 предложений)\n2. Укажи, если есть оценки вместо фактов\n3. Предложи 2–3 варианта, как начать разговор вживую'
-}
-
+function buildPrompt(){return 'Помоги улучшить обратную связь по модели SBI + Alternative B&I.\n\nS: '+inputs[0]+'\nB: '+inputs[1]+'\nI: '+inputs[2]+'\nAlt B: '+inputs[3]+'\nAlt I: '+inputs[4]+'\n\n1. Собери связный тёплый текст для разговора (5–8 предложений)\n2. Укажи, если есть оценки вместо фактов\n3. Предложи 2–3 варианта, как начать разговор вживую'}
 function renderFinal(el){
   var text=buildText();
-  var rows=STEPS.map(function(s,i){
-    if(!inputs[i].trim())return '';
-    return '<div class="final-row"><div class="final-tag'+(i>2?' green':'')+'"><span>'+s.key+'</span></div><div><div class="final-row-label">'+s.label+' · '+s.ru+'</div><div class="final-row-text">'+esc(inputs[i].trim())+'</div></div></div>'
-  }).join('');
+  var rows=STEPS.map(function(s,i){if(!inputs[i].trim())return '';return '<div class="final-row"><div class="final-tag'+(i>2?' green':'')+'"><span>'+s.key+'</span></div><div><div class="final-row-label">'+s.label+' · '+s.ru+'</div><div class="final-row-text">'+esc(inputs[i].trim())+'</div></div></div>'}).join('');
   el.innerHTML='<div style="animation:fadeUp .3s ease"><div class="card" style="padding:0;overflow:hidden"><div style="padding:16px 22px 12px;border-bottom:1px solid var(--border)"><span style="font-family:Instrument Serif,serif;font-size:17px">Ваши ответы</span></div>'+rows+'</div><div class="result-card"><h3>Черновик текста для разговора</h3><div class="result-text">'+esc(text)+'</div><div class="result-actions"><div class="copy-wrap"><div class="copied-toast" id="ct1">Скопировано!</div><button class="btn" onclick="copyIt(buildText(),\'ct1\')">Скопировать</button></div><button class="btn btn-primary" onclick="openClaude()">✦ Улучшить в Claude →</button></div></div><div class="card" style="background:var(--bg)"><p style="font-size:13px;font-weight:500;margin-bottom:9px">Промпт для ChatGPT / другого AI</p><div style="background:var(--surface);border-radius:9px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:160px;overflow-y:auto">'+esc(buildPrompt())+'</div><div class="copy-wrap" style="margin-top:10px"><div class="copied-toast" id="ct2">Скопировано!</div><button class="btn" style="font-size:13px" onclick="copyIt(buildPrompt(),\'ct2\')">Скопировать промпт</button></div></div><div style="text-align:center;margin-top:18px"><button class="btn" onclick="restart()">Начать заново</button></div></div>';
 }
-
-function copyIt(text,id){navigator.clipboard.writeText(text).then(function(){var t=document.getElementById(id);t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)})}
+function copyIt(text,id){navigator.clipboard.writeText(text).then(function(){var t=document.getElementById(id);if(t){t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2000)}})}
 function openClaude(){window.open('https://claude.ai/new?q='+encodeURIComponent(buildPrompt()),'_blank')}
 function restart(){inputs=['','','','',''];openEx=[false,false,false,false,false];current=0;render()}
 
-/* REVIEW */
+/* ══════════════ REVIEW ══════════════ */
 var situations=[
   {id:1,type:'positive',label:'Позитивная ситуация',s:'',b:'',i:'',ab:'',ai:'',open:true},
   {id:2,type:'develop',label:'Развивающая ситуация',s:'',b:'',i:'',ab:'',ai:'',open:false}
 ];
 var sitCounter=3;
-
-function addSituation(){
-  situations.push({id:sitCounter++,type:'develop',label:'Ситуация '+(situations.length+1),s:'',b:'',i:'',ab:'',ai:'',open:true});
-  renderSituations();
-}
-
+function addSituation(){situations.push({id:sitCounter++,type:'develop',label:'Ситуация '+(situations.length+1),s:'',b:'',i:'',ab:'',ai:'',open:true});renderSituations()}
 function renderSituations(){
   var el=document.getElementById('sitList');
   el.innerHTML=situations.map(function(sit,idx){
@@ -279,22 +282,15 @@ function renderSituations(){
       var phs=['Как действовать иначе?','Какой результат это даст?'];
       return '<div class="mini-field"><div class="mini-label"><span class="mini-tag tag-green">'+f.toUpperCase()+'</span>'+lbls[fi]+'</div><textarea style="min-height:54px" placeholder="'+phs[fi]+'" oninput="setSitField('+idx+',\''+f+'\',this.value)">'+sit[f]+'</textarea></div>';
     }).join('');
-    var typeBtn=function(type,label){
-      var active=sit.type===type;
-      var col=type==='positive'?'var(--green)':'var(--blue)';
-      var bg=type==='positive'?'var(--green-light)':'var(--blue-light)';
-      return '<button onclick="setSitType('+idx+',\''+type+'\')" style="padding:3px 12px;font-size:12px;border-radius:20px;border:1.5px solid '+(active?col:'var(--border)')+';background:'+(active?bg:'transparent')+';color:'+(active?col:'var(--muted)')+';cursor:pointer;font-family:inherit">'+label+'</button>';
-    };
+    var typeBtn=function(type,label){var active=sit.type===type;var col=type==='positive'?'var(--green)':'var(--blue)';var bg=type==='positive'?'var(--green-light)':'var(--blue-light)';return '<button onclick="setSitType('+idx+',\''+type+'\')" style="padding:3px 12px;font-size:12px;border-radius:20px;border:1.5px solid '+(active?col:'var(--border)')+';background:'+(active?bg:'transparent')+';color:'+(active?col:'var(--muted)')+';cursor:pointer;font-family:inherit">'+label+'</button>'};
     return '<div class="sit-card"><div class="sit-card-header" onclick="toggleSit('+idx+')"><div class="sit-num">'+(idx+1)+'</div><div style="flex:1;min-width:0"><input value="'+sit.label.replace(/"/g,'&quot;')+'" onclick="event.stopPropagation()" onchange="setSitLabel('+idx+',this.value)" style="border:none;background:transparent;font-family:DM Sans,sans-serif;font-size:14px;font-weight:500;color:var(--text);width:100%;outline:none;cursor:text" placeholder="Название ситуации">'+(sit.s?'<div class="sit-card-preview">'+esc(sit.s.substring(0,55))+'...</div>':'')+'</div><span class="sit-badge '+(full?'full':'empty')+'">'+(full?'SBI ✓':filled+'/3')+'</span><span class="sit-chevron'+(sit.open?' open':'')+'">▼</span></div><div class="sit-body'+(sit.open?' open':'')+'"><div style="display:flex;gap:6px;margin:12px 0 14px;flex-wrap:wrap;align-items:center"><span style="font-size:12px;color:var(--muted)">Тип:</span>'+typeBtn('positive','Позитивная')+typeBtn('develop','Развивающая')+'</div>'+bodyFields+'<div style="border-top:1px dashed var(--border);padding-top:12px;margin-top:4px"><p style="font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Изменение (необязательно)</p>'+futureFields+'</div>'+(situations.length>1?'<button class="btn" style="font-size:12px;color:#dc2626;border-color:#fca5a5;margin-top:4px" onclick="removeSit('+idx+')">Удалить</button>':'')+'</div></div>';
   }).join('');
 }
-
 function setSitField(idx,field,val){situations[idx][field]=val}
 function setSitLabel(idx,val){situations[idx].label=val}
 function setSitType(idx,type){situations[idx].type=type;renderSituations()}
 function toggleSit(idx){situations[idx].open=!situations[idx].open;renderSituations()}
 function removeSit(idx){situations.splice(idx,1);renderSituations()}
-
 function switchReviewTab(tab){
   document.getElementById('review-prepare').style.display=tab==='prepare'?'block':'none';
   document.getElementById('review-summary').style.display=tab==='summary'?'block':'none';
@@ -302,74 +298,130 @@ function switchReviewTab(tab){
   document.getElementById('rtab-summary').classList.toggle('active',tab==='summary');
   if(tab==='summary')renderReviewSummary();
 }
-
 function renderReviewSummary(){
   var el=document.getElementById('reviewSummaryContent');
   var filled=situations.filter(function(s){return s.s.trim()||s.b.trim()||s.i.trim()});
   if(!filled.length){el.innerHTML='<p style="color:var(--muted);font-size:14px">Заполните хотя бы одну ситуацию на вкладке «Подготовка».</p>';return}
-  var prompt='Помоги подготовиться к performance review.\n\nЯ собрал ситуации по модели SBI + Alternative B&I:\n\n'+filled.map(function(s){
-    return '--- '+s.label+' ('+( s.type==='positive'?'позитивная':'развивающая')+')\nS: '+(s.s||'—')+'\nB: '+(s.b||'—')+'\nI: '+(s.i||'—')+'\nAlt B: '+(s.ab||'—')+'\nAlt I: '+(s.ai||'—');
-  }).join('\n\n')+'\n\nЗадачи:\n1. Улучши формулировки (убери оценки, оставь только факты)\n2. Предложи порядок подачи ОС на встрече\n3. Напиши связный текст для разговора';
-  var rows=filled.map(function(s){
-    var col=s.type==='positive'?'var(--green)':'var(--blue)';
-    var bg=s.type==='positive'?'var(--green-light)':'var(--blue-light)';
-    return '<div class="final-row"><div style="flex-shrink:0;padding-top:2px"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+bg+';color:'+col+'">'+s.label+'</span></div><div>'+(s.s?'<div class="final-row-text" style="font-size:13px">'+esc(s.s)+'</div>':'')+(s.b?'<div class="final-row-text" style="font-size:13px;color:var(--muted)">'+esc(s.b)+'</div>':'')+'</div></div>';
-  }).join('');
+  var prompt='Помоги подготовиться к performance review.\n\nЯ собрал ситуации по модели SBI + Alternative B&I:\n\n'+filled.map(function(s){return '--- '+s.label+' ('+(s.type==='positive'?'позитивная':'развивающая')+')\nS: '+(s.s||'—')+'\nB: '+(s.b||'—')+'\nI: '+(s.i||'—')+'\nAlt B: '+(s.ab||'—')+'\nAlt I: '+(s.ai||'—')}).join('\n\n')+'\n\nЗадачи:\n1. Улучши формулировки (убери оценки, оставь только факты)\n2. Предложи порядок подачи ОС на встрече\n3. Напиши связный текст для разговора';
+  var rows=filled.map(function(s){var col=s.type==='positive'?'var(--green)':'var(--blue)';var bg=s.type==='positive'?'var(--green-light)':'var(--blue-light)';return '<div class="final-row"><div style="flex-shrink:0;padding-top:2px"><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:'+bg+';color:'+col+'">'+s.label+'</span></div><div>'+(s.s?'<div class="final-row-text" style="font-size:13px">'+esc(s.s)+'</div>':'')+(s.b?'<div class="final-row-text" style="font-size:13px;color:var(--muted)">'+esc(s.b)+'</div>':'')+'</div></div>'}).join('');
   el.innerHTML='<div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">'+rows+'</div><div class="result-card"><h3>Промпт для Claude / ChatGPT</h3><div style="background:var(--bg);border-radius:9px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:200px;overflow-y:auto">'+esc(prompt)+'</div><div class="result-actions"><div class="copy-wrap"><div class="copied-toast" id="ct3">Скопировано!</div><button class="btn" onclick="copyIt3()">Скопировать промпт</button></div><button class="btn btn-primary" id="openClaudeReview">✦ Открыть в Claude →</button></div></div>';
   document.getElementById('openClaudeReview').onclick=function(){window.open('https://claude.ai/new?q='+encodeURIComponent(prompt),'_blank')};
   window._reviewPrompt=prompt;
 }
 function copyIt3(){copyIt(window._reviewPrompt||'','ct3')}
 
-/* QUESTIONS */
-var QUESTIONS={
-  open:[
-    {text:'Как ты сам оцениваешь этот период? Что получилось лучше всего?',phase:'open'},
-    {text:'Были ли ситуации, где ты чувствовал, что мог сработать сильнее?',phase:'open'},
-    {text:'Что тебе помогало работать в полную силу? Что мешало?',phase:'open'},
-    {text:'Как ты себя чувствуешь в команде прямо сейчас?',phase:'open'}
-  ],
-  sbi:[
-    {text:'Я хочу поделиться конкретным наблюдением. Как тебе отзывается то, что я сказал?',phase:'reflect'},
-    {text:'Ты согласен с тем, что я описал? Или видишь ситуацию иначе?',phase:'reflect'},
-    {text:'Что, на твой взгляд, привело к этому?',phase:'reflect'},
-    {text:'Как ты думаешь, что можно было бы сделать иначе?',phase:'reflect'},
-    {text:'Что тебе нужно от меня, чтобы в следующий раз получилось по-другому?',phase:'reflect'}
-  ],
-  forward:[
-    {text:'Если говорить о следующих 3 месяцах — на чём ты хочешь сосредоточиться?',phase:'forward'},
-    {text:'Какую одну привычку или практику ты готов взять на себя?',phase:'forward'},
-    {text:'Как я могу тебе помочь? Что изменить в нашей работе вместе?',phase:'forward'},
-    {text:'По каким признакам мы оба поймём, что движемся в правильном направлении?',phase:'forward'}
-  ]
-};
-var PHASE_L={open:'Открывающий',reflect:'После ОС',forward:'На будущее'};
-var PHASE_C={open:'q-open',reflect:'q-reflect',forward:'q-forward'};
+/* ══════════════ TRAINER ══════════════ */
+var CASES=[
+  {
+    scenario:'Менеджер Алексей провёл презентацию для нового клиента. В середине выступления он начал импровизировать и отошёл от согласованных тезисов — добавил обещания по срокам, которые команда не обсуждала. Клиент остался доволен, но теперь у команды появились обязательства, о которых никто не знал.',
+    bad:'«Алексей, ты опять всё испортил. Нельзя обещать клиентам то, что мы не можем выполнить — ты безответственный и ставишь всю команду в неловкое положение.»',
+    errors:['оценка личности','нет конкретики','нет альтернативы'],
+    good:'S: На презентации для клиента в четверг\nB: ты добавил обещания по срокам, которые мы не обсуждали — конкретно: запуск за 3 недели вместо согласованных 6\nI: теперь у команды появились обязательства, которые мы не успеем выполнить, и нам придётся либо перерабатывать, либо переговаривать с клиентом\nAlt B: давай договоримся, что любые изменения в обещаниях ты согласуешь со мной до или после встречи\nAlt I: тогда мы сможем управлять ожиданиями клиента и не ставить команду в трудное положение',
+    explain:'Оригинальная ОС содержит оценку личности («безответственный»), нет конкретного поведенческого факта и полностью отсутствует альтернатива — человеку непонятно, что делать иначе.'
+  },
+  {
+    scenario:'Аналитик Мария регулярно присылает отчёты с опозданием на 1–2 дня. На этой неделе из-за задержки команда не смогла подготовить материалы к стратегической сессии — встречу пришлось перенести.',
+    bad:'«Маша, ты постоянно опаздываешь с отчётами. Я уже устал это повторять. Если так продолжится — будем решать вопрос по-другому.»',
+    errors:['угроза вместо альтернативы','нет конкретики по последствиям','давление вместо диалога'],
+    good:'S: На этой неделе, в среду\nB: отчёт по сегментам поступил на два дня позже согласованного срока — во вторник вечером вместо воскресенья\nI: команда не успела подготовить материалы к стратегической сессии в четверг, встречу пришлось перенести\nAlt B: если видишь, что не успеваешь к сроку — напиши мне за день, я помогу перераспределить задачи или скорректирую план\nAlt I: тогда мы сможем реагировать заранее и не срывать встречи',
+    explain:'Угроза («будем решать вопрос по-другому») создаёт страх, но не даёт понимания что делать. Слово «постоянно» — обобщение без конкретики. Нет ни последствий, ни альтернативного поведения.'
+  },
+  {
+    scenario:'Тимлид Дмитрий на ретроспективе перебивал коллег и несколько раз заканчивал их мысли за них. Двое участников замолчали и перестали высказываться до конца встречи.',
+    bad:'«Дима, ты ведёшь себя как диктатор на встречах. Никто не может слова сказать — все молчат из-за тебя. Тебе нужно срочно работать над коммуникацией.»',
+    errors:['оценка личности — «диктатор»','причинно-следственная связь без факта','нет конкретного поведения'],
+    good:'S: На ретроспективе в пятницу\nB: ты четыре раза заканчивал фразы за коллегами, не давая им договорить\nI: Саша и Лена замолчали примерно на середине встречи и больше не высказывались — мы потеряли их точку зрения\nAlt B: попробуй после вопроса выдерживать паузу в 3–5 секунд, прежде чем продолжить — это даст людям время собраться с мыслями\nAlt I: тогда больше голосов будет услышано, и ретро станет богаче',
+    explain:'«Диктатор» — это интерпретация, а не факт. Нужно описать конкретное действие (перебивал, заканчивал фразы) и его измеримый результат (двое замолчали). Альтернатива должна быть практичной и конкретной.'
+  },
+  {
+    scenario:'Продакт-менеджер Ольга самостоятельно изменила приоритеты спринта, не согласовав с командой. Разработчики узнали об этом во время планирования и были вынуждены переделывать уже начатые задачи.',
+    bad:'«Оля, ты не имеешь права менять спринт без согласования. Это хаос и неуважение к команде. Так работать невозможно.»',
+    errors:['эмоциональная оценка','нет последствий','нет конструктивной альтернативы'],
+    good:'S: На планировании в понедельник\nB: приоритеты спринта были изменены без предварительного согласования с командой — разработчики узнали об этом только на встрече\nI: двое из команды уже начали работу по старым задачам и потратили около 6 часов, которые теперь нужно перераспределить\nAlt B: давай договоримся, что любые изменения в приоритетах ты сначала выносишь на короткий синк со мной или в общий чат\nAlt I: тогда команда сможет планировать работу без неожиданных разворотов и сохранит фокус',
+    explain:'«Хаос и неуважение» — эмоциональные оценки, которые вызывают защитную реакцию. Важно описать факт (что именно изменилось, когда узнала команда) и конкретный ущерб (часы, потраченные зря).'
+  }
+];
 
-function renderQuestions(tab){
-  var el=document.getElementById('qlist-'+tab);
-  el.innerHTML=QUESTIONS[tab].map(function(q,i){
-    return '<div class="q-card"><div class="q-num">'+(i+1)+'</div><div><div class="q-text">'+q.text+'</div><span class="q-phase '+PHASE_C[q.phase]+'">'+PHASE_L[q.phase]+'</span></div></div>';
-  }).join('');
+var trainerIdx=0;
+var answersShown=[];
+var aiCases=[];
+var allCases=CASES.slice();
+
+function renderTrainer(){
+  var el=document.getElementById('trainerContent');
+  if(!allCases.length){el.innerHTML='<div class="card"><p style="color:var(--muted);font-size:14px;text-align:center">Ситуации закончились — нажмите «Сгенерировать новую»</p></div>';return}
+  var c=allCases[trainerIdx];
+  var shown=answersShown[trainerIdx];
+  var errTags=c.errors.map(function(e){return '<span class="error-tag">'+e+'</span>'}).join('');
+  var dots=allCases.map(function(_,i){return '<div class="dot'+(i===trainerIdx?' active':answersShown[i]?' done':'')+'" onclick="goCase('+i+')"></div>'}).join('');
+  el.innerHTML='<div class="trainer-card">'+
+    '<div class="trainer-scenario"><div class="trainer-scenario-label">Ситуация</div><div class="trainer-scenario-text">'+esc(c.scenario)+'</div></div>'+
+    '<div class="trainer-bad"><div class="trainer-bad-label">✗ Неправильная формулировка'+( c.errors.length?'&nbsp;—&nbsp;'+errTags:'')+'</div><div class="trainer-bad-text">'+esc(c.bad)+'</div></div>'+
+    '<div class="trainer-input"><div class="trainer-input-label">Ваша версия по модели SBI + Alt B&amp;I:</div><textarea id="ta-trainer" style="min-height:100px" placeholder="S: ...\nB: ...\nI: ...\nAlt B: ...\nAlt I: ..."></textarea></div>'+
+    '<div class="trainer-actions">'+
+      '<button class="btn btn-primary" onclick="showAnswer()">Посмотреть эталон</button>'+
+      (trainerIdx>0?'<button class="btn" onclick="goCase('+(trainerIdx-1)+')">← Назад</button>':'')+
+      (trainerIdx<allCases.length-1?'<button class="btn" onclick="goCase('+(trainerIdx+1)+')">Следующая →</button>':'')+
+    '</div>'+
+    '<div class="trainer-answer'+(shown?' open':'')+'" id="trainerAnswer">'+
+      '<div class="trainer-answer-label">✓ Эталонный ответ</div>'+
+      '<div class="trainer-answer-text">'+esc(c.good)+'</div>'+
+      '<div class="trainer-explain">'+esc(c.explain)+'</div>'+
+    '</div>'+
+    '<div class="trainer-nav"><div class="dots">'+dots+'</div><span class="trainer-progress">'+(trainerIdx+1)+' / '+allCases.length+'</span></div>'+
+  '</div>';
 }
 
-function switchQTab(tab){
-  ['open','sbi','forward'].forEach(function(t){
-    document.getElementById('q-'+t).style.display=t===tab?'block':'none';
-    document.getElementById('qtab-'+t).classList.toggle('active',t===tab);
-  });
+function showAnswer(){
+  answersShown[trainerIdx]=true;
+  var ans=document.getElementById('trainerAnswer');
+  if(ans){ans.classList.add('open')}
+  var dots=document.querySelectorAll('.dot');
+  if(dots[trainerIdx])dots[trainerIdx].className='dot done';
 }
 
-function copyQuestions(){
-  var names={open:'Открывающие вопросы',sbi:'После ОС по SBI',forward:'На будущее'};
-  var all=Object.keys(QUESTIONS).map(function(g){
-    return names[g]+':\n'+QUESTIONS[g].map(function(q,i){return (i+1)+'. '+q.text}).join('\n');
-  }).join('\n\n');
-  navigator.clipboard.writeText(all).then(function(){alert('Все вопросы скопированы!')});
+function goCase(i){
+  trainerIdx=i;
+  renderTrainer();
+  window.scrollTo({top:document.getElementById('trainerContent').offsetTop-20,behavior:'smooth'});
 }
 
+async function generateAICase(){
+  var btn=document.getElementById('genBtn');
+  btn.disabled=true;btn.textContent='Генерирую...';
+  var el=document.getElementById('trainerContent');
+  var loadDiv=document.createElement('div');
+  loadDiv.className='ai-loading';
+  loadDiv.innerHTML='<span class="blink"><span>●</span><span>●</span><span>●</span></span> Claude придумывает новую ситуацию...';
+  el.insertBefore(loadDiv,el.firstChild);
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:'Придумай кейс для тренажёра обратной связи по модели SBI + Alternative B&I. Верни ТОЛЬКО валидный JSON без markdown и пояснений в формате:\n{"scenario":"текст ситуации 3-4 предложения","bad":"неправильная ОС которую дал руководитель — с типичными ошибками: оценка личности или эмоции вместо фактов или угроза или отсутствие альтернативы","errors":["ошибка1","ошибка2"],"good":"S: ...\nB: ...\nI: ...\nAlt B: ...\nAlt I: ...","explain":"объяснение что не так в плохой ОС и что исправлено в эталоне 2-3 предложения"}\n\nКонтекст: корпоративная среда, руководитель даёт ОС сотруднику. Ситуация должна быть реалистичной и отличаться от: опоздание с отчётом, перебивание на встрече, несогласованные обещания клиенту, изменение приоритетов спринта.'}]
+      })
+    });
+    var data=await res.json();
+    var text=data.content.map(function(b){return b.text||''}).join('');
+    var parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
+    allCases.push(parsed);
+    answersShown.push(false);
+    trainerIdx=allCases.length-1;
+    loadDiv.remove();
+    renderTrainer();
+  }catch(e){
+    loadDiv.innerHTML='<span style="color:var(--red)">Не удалось сгенерировать — попробуйте ещё раз</span>';
+    setTimeout(function(){loadDiv.remove()},3000);
+  }
+  btn.disabled=false;btn.textContent='✦ Сгенерировать новую ситуацию';
+}
+
+/* ══════════════ MODE SWITCH ══════════════ */
 function switchMode(mode){
-  ['single','review','questions'].forEach(function(m){
+  ['single','review','trainer'].forEach(function(m){
     var p=document.getElementById('mode-'+m);if(p)p.style.display=m===mode?'block':'none';
     var t=document.getElementById('tab-'+m);if(t)t.classList.toggle('active',m===mode);
   });
@@ -377,8 +429,10 @@ function switchMode(mode){
   document.getElementById('progressBar').style.width=mode==='single'?pct()+'%':'0%';
 }
 
+/* ══════════════ INIT ══════════════ */
+answersShown=CASES.map(function(){return false});
 renderSituations();
-['open','sbi','forward'].forEach(renderQuestions);
+renderTrainer();
 render();
 </script>
 </body>
